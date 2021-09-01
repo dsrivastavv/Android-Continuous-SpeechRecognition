@@ -1,6 +1,7 @@
 package com.example.divyansh.googleapivoice;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,8 +12,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
     private String LOG_TAG = "VoiceRecognitionActivity";
+    private ImageButton pauseButton;
+    private ImageButton playButton;
+    private ImageButton settingsButton;
 
     private void resetSpeechRecognizer() {
 
@@ -59,17 +66,36 @@ public class MainActivity extends AppCompatActivity implements
 
         // UI initialisation
         returnedText = findViewById(R.id.textView1);
-        returnedError = findViewById(R.id.errorView1);
         progressBar =  findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.INVISIBLE);
+        pauseButton = findViewById(R.id.pauseButton);
+        playButton = findViewById(R.id.playButton);
+        playButton.setVisibility(View.INVISIBLE);
+        settingsButton = findViewById(R.id.plusButton);
 
+        pauseButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                onStop();
+                pauseButton.setVisibility(View.INVISIBLE);
+                playButton.setVisibility(View.VISIBLE);
+            }
+
+        });
+
+        playButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                onResume();
+                playButton.setVisibility(View.INVISIBLE);
+                pauseButton.setVisibility(View.VISIBLE);
+            }
+        });
 
         // start speech recogniser
         resetSpeechRecognizer();
 
         // start progress bar
-        progressBar.setVisibility(View.VISIBLE);
         progressBar.setIndeterminate(true);
+
 
         // check for permission
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -80,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
 
         setRecogniserIntent();
         speech.startListening(recognizerIntent);
+
     }
 
     @Override
@@ -152,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
         for (String result : matches)
             text += result + "\n";
 
-        returnedText.setText(text);
+        returnedText.setText(matches.get(0));
         speech.startListening(recognizerIntent);
     }
 
@@ -160,7 +187,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onError(int errorCode) {
         String errorMessage = getErrorText(errorCode);
         Log.i(LOG_TAG, "FAILED " + errorMessage);
-        returnedError.setText(errorMessage);
+        if (!errorMessage.equals("No match")){
+            returnedText.setText(errorMessage);
+        }
 
         // rest voice recogniser
         resetSpeechRecognizer();

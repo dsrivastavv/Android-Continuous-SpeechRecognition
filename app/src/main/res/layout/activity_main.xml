@@ -1,40 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     android:orientation="vertical" >
-
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="363dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="101dp"
+        android:layout_marginEnd="26dp"
+        android:fontFamily="@font/montserrat"
+        android:gravity="left"
+        android:text="Speak to start"
+        android:textSize="30sp" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="28dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
-
-    <TextView
-        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar1"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="47dp" />
+        android:layout_marginStart="182dp"
+        android:layout_marginTop="139dp" />
 
-    <TextView
-        android:id="@+id/errorView1"
+    <ImageButton
+        android:id="@+id/pauseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="134dp"
+        android:layout_marginBottom="31dp"
+        android:contentDescription="Pauses listening"
+        app:srcCompat="@android:drawable/ic_media_pause" />
+
+    <ImageButton
+        android:id="@+id/plusButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="134dp"
+        android:layout_marginBottom="31dp"
+        android:contentDescription="Opens settings page"
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <ImageButton
+        android:id="@+id/playButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginBottom="31dp"
+        android:contentDescription="Resumes listening"
+        app:srcCompat="@android:drawable/ic_media_play" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="154dp"
+        android:layout_height="81dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="257dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="0dp"
+        app:srcCompat="@drawable/screenshot_2021_09_01_at_13_40_00" />
 
 </RelativeLayout>
