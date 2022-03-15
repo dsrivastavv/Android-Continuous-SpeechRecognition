@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout1"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,6 +32,26 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="182dp"
         android:layout_marginTop="139dp" />
+
+
+    <GridView
+        android:id="@+id/wordGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="362dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="54dp"
+        android:layout_marginBottom="117dp"
+        android:footerDividersEnabled="false"
+        android:horizontalSpacing="50dp"
+        android:numColumns="3"
+        android:padding="1dp">
+
+    </GridView>
 
     <ImageButton
         android:id="@+id/pauseButton"
@@ -76,6 +97,6 @@
         android:layout_marginStart="257dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="0dp"
-        app:srcCompat="@drawable/screenshot_2021_09_01_at_13_40_00" />
+        app:srcCompat="@drawable/wordsmith_logo" />
 
 </RelativeLayout>

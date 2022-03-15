@@ -1,3 +1,69 @@
 <resources>
-    <string name="app_name">GoogleAPIVoice</string>
+    <string name="app_name">Wordsmith</string>
+    <string name="Show_images">Show images under word suggestions</string>
+    <string name="colouropts">Colour options</string>
+    <string name="background_colour">Background colour</string>
+    <string name="primary_colour">Primary text colour</string>
+    <string name="highlight_colour">Highlight colour</string>
+    <string name="font">Font</string>
+    <string name="fontopts">Font options</string>
+    <string name="text_size">Text size</string>
+    <string name="delay">Delay before word suggestions</string>
+    <string name="no_suggestions">Number of word suggestions</string>
+    <string name="customise">Customise Wordsmith</string>
+    <string name="left">left</string>
+    <string name="right">right</string>
+    <string name="go_back_to_main">go back to main</string>
+
+    <string-array name="pref_2">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="pref_3">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="pref_bgcolours">
+        <item>Black</item>
+        <item>White</item>
+    </string-array>
+
+    <string-array name="pref_txtcolours">
+        <item>Grey</item>
+        <item>Dark grey</item>
+    </string-array>
+
+    <string-array name="pref_hlcolours">
+        <item>Cyan</item>
+        <item>Pink</item>
+    </string-array>
+
+    <string-array name="pref_fonts">
+        <item>Sans Serif 1</item>
+        <item>Sans Serif 2</item>
+    </string-array>
+
+    <string-array name="pref_textsize">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+    <string-array name="pref_delay">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="pref_no_suggestions">
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
 </resources>
+
+
+
+

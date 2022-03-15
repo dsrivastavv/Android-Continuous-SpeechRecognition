@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="500dp" android:layout_width="400dp">
+    <PreferenceCategory android:title="Preferences">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/Show_images"
+            android:title="@string/Show_images" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Theme">
+        <ListPreference
+            android:defaultValue="Black"
+            android:dialogTitle="@string/colouropts"
+            android:entries="@array/pref_bgcolours"
+            android:entryValues="@array/pref_bgcolours"
+            android:key="@string/background_colour"
+            android:title="@string/background_colour"/>
+
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/colouropts"
+            android:entries="@array/pref_txtcolours"
+            android:entryValues="@array/pref_2"
+            android:key="@string/primary_colour"
+            android:title="@string/primary_colour"/>
+
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/colouropts"
+            android:entries="@array/pref_hlcolours"
+            android:entryValues="@array/pref_2"
+            android:key="@string/highlight_colour"
+            android:title="@string/highlight_colour"/>
+    </PreferenceCategory>
+
+
+
+    <PreferenceCategory android:title="Theme">
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/fontopts"
+            android:entries="@array/pref_fonts"
+            android:entryValues="@array/pref_2"
+            android:key="@string/font"
+            android:title="@string/font"/>
+
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/text_size"
+            android:entries="@array/pref_textsize"
+            android:entryValues="@array/pref_3"
+            android:key="@string/text_size"
+            android:title="@string/text_size"/>
+
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/delay"
+            android:entries="@array/pref_delay"
+            android:entryValues="@array/pref_2"
+            android:key="@string/delay"
+            android:title="@string/delay"/>
+
+        <ListPreference
+            android:defaultValue="2"
+            android:dialogTitle="@string/no_suggestions"
+            android:entries="@array/pref_no_suggestions"
+            android:entryValues="@array/pref_2"
+            android:key="@string/no_suggestions"
+            android:title="@string/no_suggestions"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
+
+
+
+
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:background="#ffffff"-->
+<!--    android:orientation="vertical" >-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/settingshead"-->
+<!--        android:layout_width="363dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginStart="22dp"-->
+<!--        android:layout_marginTop="101dp"-->
+<!--        android:layout_marginEnd="26dp"-->
+<!--        android:fontFamily="@font/montserrat"-->
+<!--        android:gravity="left"-->
+<!--        android:text="Customise Wordsmith"-->
+<!--        android:textSize="30sp" />-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView2"-->
+<!--        android:layout_width="154dp"-->
+<!--        android:layout_height="81dp"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:layout_marginStart="257dp"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--        android:layout_marginEnd="0dp"-->
+<!--        app:srcCompat="@drawable/wordsmith_logo" />-->
+
+
+<!--</RelativeLayout>-->

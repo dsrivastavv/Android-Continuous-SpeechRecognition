@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".SettingsActivity">
+
+    <TextView
+        android:id="@+id/settingshead"
+        android:layout_width="363dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="101dp"
+        android:layout_marginEnd="26dp"
+        android:fontFamily="@font/montserrat"
+        android:gravity="start"
+        android:text="@string/customise"
+        android:textSize="30sp" />
+
+    <!--frame layout for displaying
+        our preference fragment-->
+
+    <ImageView
+        android:id="@+id/imageView2"
+        app:srcCompat="@drawable/wordsmith_logo"
+        android:layout_width="154dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="257dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="0dp"
+        android:contentDescription="@string/Show_images" />
+
+
+    <FrameLayout
+        android:id="@+id/idFrameLayout"
+        android:layout_width="409dp"
+        android:layout_height="405dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="156dp"
+        android:layout_marginEnd="-3dp"
+        android:layout_marginBottom="98dp" />
+
+    <ImageButton
+        android:id="@+id/homeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="176dp"
+        android:layout_marginBottom="29dp"
+        android:contentDescription="@string/go_back_to_main"
+        app:srcCompat="@android:drawable/ic_media_play" />
+
+</RelativeLayout>
