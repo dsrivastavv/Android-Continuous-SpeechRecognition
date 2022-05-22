@@ -33,7 +33,7 @@
         android:layout_marginStart="257dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="0dp"
-        android:contentDescription="@string/Show_images" />
+        android:contentDescription="@string/logo" />
 
 
     <FrameLayout

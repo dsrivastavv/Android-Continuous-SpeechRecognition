@@ -1,12 +1,15 @@
 package com.example.divyansh.googleapivoice;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -39,7 +42,7 @@ import okhttp3.Response;
 import static android.content.SharedPreferences.*;
 
 public class MainActivity extends AppCompatActivity implements
-        RecognitionListener {
+        RecognitionListener, Preference.OnPreferenceChangeListener {
 
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private TextView returnedText;
@@ -54,6 +57,89 @@ public class MainActivity extends AppCompatActivity implements
     String[] predictions = {};
     final int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relativeLayout1);
+
+        // UI initialisation
+        returnedText = findViewById(R.id.textView1);
+        progressBar = findViewById(R.id.progressBar1);
+        progressBar.setVisibility(View.INVISIBLE);
+        pauseButton = findViewById(R.id.pauseButton);
+        playButton = findViewById(R.id.playButton);
+        playButton.setVisibility(View.INVISIBLE);
+        settingsButton = findViewById(R.id.plusButton);
+
+        //prefs.registerOnSharedPreferenceChangeListener(listener);
+        //int bgcolour = SettingsFragment.loadTotalFromPref(this);
+       // SharedPreferences sp = getApplicationContext().getSharedPreferences("background_colour" ,Context.MODE_PRIVATE);
+
+        //open settings using button
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSettings();
+
+            }
+        });
+
+        //pause using button
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onStop();
+                pauseButton.setVisibility(View.INVISIBLE);
+                playButton.setVisibility(View.VISIBLE);
+            }
+
+        });
+
+        //play using button
+        playButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onResume();
+                playButton.setVisibility(View.INVISIBLE);
+                pauseButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        wordGrid = findViewById(R.id.wordGrid);
+
+        GridAdapter gridAdapter = new GridAdapter(this, predictions, images);
+
+        wordGrid.setAdapter(gridAdapter);
+
+        // initialise package that simplifies API calls
+        AndroidNetworking.initialize(getApplicationContext());
+
+        // start speech recogniser
+        resetSpeechRecognizer();
+
+        // start progress bar
+        progressBar.setIndeterminate(true);
+
+        // check for permission
+        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
+            return;
+        }
+
+        setRecogniserIntent();
+        speech.startListening(recognizerIntent);
+    }
+
+
+    public void openSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object o) {
+        return false;
+    }
 
     @Override
     public void onBeginningOfSpeech() {
@@ -117,87 +203,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relativeLayout1);
-
-        // UI initialisation
-        returnedText = findViewById(R.id.textView1);
-        progressBar = findViewById(R.id.progressBar1);
-        progressBar.setVisibility(View.INVISIBLE);
-        pauseButton = findViewById(R.id.pauseButton);
-        playButton = findViewById(R.id.playButton);
-        playButton.setVisibility(View.INVISIBLE);
-        settingsButton = findViewById(R.id.plusButton);
-
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //String bgcolour = prefs.getString("background_colour", "White");
-//        if ("White".equals(bgcolour)) {
-//            layout.setBackgroundColor(Color.WHITE);
-//        }
-//        else if ("Black".equals(bgcolour)) {
-//            layout.setBackgroundColor(Color.BLACK);
-//        }
-
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openSettings();
-
-            }
-        });
-
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onStop();
-                pauseButton.setVisibility(View.INVISIBLE);
-                playButton.setVisibility(View.VISIBLE);
-            }
-
-        });
-
-        playButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onResume();
-                playButton.setVisibility(View.INVISIBLE);
-                pauseButton.setVisibility(View.VISIBLE);
-            }
-        });
-
-        wordGrid = findViewById(R.id.wordGrid);
-
-        GridAdapter gridAdapter = new GridAdapter(this, predictions, images);
-
-        wordGrid.setAdapter(gridAdapter);
-
-        // initialise package that simplifies API calls
-        AndroidNetworking.initialize(getApplicationContext());
-
-        // start speech recogniser
-        resetSpeechRecognizer();
-
-        // start progress bar
-        progressBar.setIndeterminate(true);
-
-        // check for permission
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
-            return;
-        }
-
-        setRecogniserIntent();
-        speech.startListening(recognizerIntent);
-    }
-
-
-    public void openSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -214,6 +219,22 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStart() {
+        SharedPreferences prefs = getSharedPreferences("background_colour", Context.MODE_PRIVATE);
+        //onSharedPreferenceChanged(prefs, "background_colour");
+        //get the background
+        // set the background
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
     public void onResume() {
         Log.i(LOG_TAG, "resume");
         super.onResume();
@@ -227,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onPause();
         speech.stopListening();
     }
+
 
     @Override
     protected void onStop() {
@@ -361,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements
                 message = "RecognitionService busy";
                 break;
             case SpeechRecognizer.ERROR_SERVER:
-                message = "error from server";
+                message = "Error from server";
                 break;
             case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                 message = "No speech input";
@@ -372,4 +394,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         return message;
     }
+
+
+
 }

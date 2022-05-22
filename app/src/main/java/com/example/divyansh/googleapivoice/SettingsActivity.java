@@ -3,6 +3,7 @@ package com.example.divyansh.googleapivoice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -33,9 +34,23 @@ public class SettingsActivity extends AppCompatActivity {
                 return;
             }
             // below line is to inflate our fragment.
-            getFragmentManager().beginTransaction().add(R.id.idFrameLayout, new SettingsFragment()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.idFrameLayout, new SettingsFragment()).commit();
         }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 
 }
+
 

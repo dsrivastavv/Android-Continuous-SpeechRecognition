@@ -13,8 +13,8 @@
         <ListPreference
             android:defaultValue="Black"
             android:dialogTitle="@string/colouropts"
-            android:entries="@array/pref_bgcolours"
-            android:entryValues="@array/pref_bgcolours"
+            android:entries="@array/pref_bgcolourstrings"
+            android:entryValues="@array/pref_2"
             android:key="@string/background_colour"
             android:title="@string/background_colour"/>
 
