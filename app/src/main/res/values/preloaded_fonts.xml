@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
-        <item>@font/montserrat</item>
-        <item>@font/montserrat_subrayada</item>
+        <item>@font/montserratlight</item>
+        <item>@font/montserratmed</item>
+        <item>@font/arial</item>
+        <item>@font/calibri</item>
+        <item>@font/helvetica</item>
+
     </array>
 </resources>

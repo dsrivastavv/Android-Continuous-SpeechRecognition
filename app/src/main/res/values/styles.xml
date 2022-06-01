@@ -1,11 +1,62 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+<!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
+<!--    </style>-->
+
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="preferenceTheme">
+            @style/AppPreferenceTheme
+        </item>
     </style>
+
+    <style name="PreferenceBoxThemeMont" parent="@style/AppTheme">
+        <item name="android:fontFamily">@font/montserratmed</item>
+        <item name="fontFamily">@font/montserratmed</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:divider">@null</item>
+    </style>
+
+    <style name="PreferenceBoxThemeHelv" parent="@style/AppTheme">
+        <item name="android:fontFamily">@font/helvetica</item>
+        <item name="fontFamily">@font/montserratmed</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:divider">@null</item>
+    </style>
+
+    <style name="PreferenceBoxThemeArial" parent="@style/AppTheme">
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="fontFamily">@font/montserratmed</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:divider">@null</item>
+    </style>
+
+    <style name="PreferenceBoxThemeCali" parent="@style/AppTheme">
+        <item name="android:fontFamily">@font/calibri</item>
+        <item name="fontFamily">@font/montserratmed</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:divider">@null</item>
+    </style>
+
+    <!-- Custom Preference Theme -->
+    <style name="AppPreferenceTheme"
+        parent="@style/PreferenceThemeOverlay.v14.Material">
+<!--        <item name="preferenceFragmentCompatStyle">-->
+<!--            @style/AppPreferenceFragmentCompatStyle-->
+<!--        </item>-->
+        <item name="android:fontFamily">@font/montserratmed</item>
+        <item name="fontFamily">@font/montserratmed</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+<!--    &lt;!&ndash; Custom Style for PreferenceFragmentCompat &ndash;&gt;-->
+<!--    <style name="AppPreferenceFragmentCompatStyle"-->
+<!--        parent="@style/PreferenceFragment.Material">-->
+<!--    </style>-->
 
 </resources>

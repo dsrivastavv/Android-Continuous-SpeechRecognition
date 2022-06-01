@@ -1,22 +1,28 @@
 package com.example.divyansh.googleapivoice;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -29,33 +35,40 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-
 import com.androidnetworking.AndroidNetworking;
-
 import java.util.ArrayList;
-import java.util.Objects;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static android.content.SharedPreferences.*;
-
 public class MainActivity extends AppCompatActivity implements
-        RecognitionListener, Preference.OnPreferenceChangeListener {
-
+        RecognitionListener {
+    //Speech recognition
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private TextView returnedText;
     private ProgressBar progressBar;
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
     private String LOG_TAG = "VoiceRecognitionActivity";
+    //UI
     private ImageButton pauseButton;
     private ImageButton playButton;
     private ImageButton settingsButton;
+    private TextView showImagesText;
+    //WordGrid
     private GridView wordGrid;
     String[] predictions = {};
     final int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
+    //Preferences
+    String store_theme;
+    boolean store_showimg;
+    String store_font;
+    String store_fontsize;
+    public static final String KEY_THEME = "Theme options";
+    public static final String KEY_IMG = "Show images under word suggestions";
+    public static final String KEY_FONT = "Font";
+    public static final String KEY_FONTSIZE ="Font size";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +84,8 @@ public class MainActivity extends AppCompatActivity implements
         playButton = findViewById(R.id.playButton);
         playButton.setVisibility(View.INVISIBLE);
         settingsButton = findViewById(R.id.plusButton);
+        showImagesText = findViewById(R.id.textView2);
 
-        //prefs.registerOnSharedPreferenceChangeListener(listener);
-        //int bgcolour = SettingsFragment.loadTotalFromPref(this);
-       // SharedPreferences sp = getApplicationContext().getSharedPreferences("background_colour" ,Context.MODE_PRIVATE);
-
-        //open settings using button
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        //pause using button
         pauseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onStop();
@@ -95,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements
 
         });
 
-        //play using button
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onResume();
@@ -104,6 +111,32 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        //checking initial preferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+        store_showimg = sharedPreferences.getBoolean(KEY_IMG, true);
+        //Log.d("showimg on start up", Boolean.toString(store_showimg));
+        if (store_showimg){
+            showImagesText.setVisibility(View.VISIBLE);
+        }
+        else{
+            showImagesText.setVisibility((View.INVISIBLE));
+        }
+
+        store_theme = sharedPreferences.getString(KEY_THEME, "Light");
+        Log.d("Bg start main", store_theme);
+        if (store_theme.equals("Light")){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        else if (store_theme.equals("Dark")){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+
+        store_font = sharedPreferences.getString(KEY_FONT, "Montserrat");
+
+        store_fontsize = sharedPreferences.getString(KEY_FONTSIZE, "Medium");
+
+        //word grid set up
         wordGrid = findViewById(R.id.wordGrid);
 
         GridAdapter gridAdapter = new GridAdapter(this, predictions, images);
@@ -126,19 +159,14 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         setRecogniserIntent();
         speech.startListening(recognizerIntent);
     }
 
-
     public void openSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object o) {
-        return false;
     }
 
     @Override
@@ -157,9 +185,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onError(int errorCode) {
         String errorMessage = getErrorText(errorCode);
         Log.i(LOG_TAG, "FAILED " + errorMessage);
-        if (!errorMessage.equals("No match")) {
-            returnedText.setText(errorMessage);
-        }
+//        if (!errorMessage.equals("No match")) {
+//            returnedText.setText(errorMessage);
+//        }
 
         // rest voice recogniser
         resetSpeechRecognizer();
@@ -180,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onReadyForSpeech(Bundle bundle) {
         Log.i(LOG_TAG, "onReadyForSpeech");
     }
-
 
     private void resetSpeechRecognizer() {
         if (speech != null)
@@ -220,24 +247,75 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onStart() {
-        SharedPreferences prefs = getSharedPreferences("background_colour", Context.MODE_PRIVATE);
-        //onSharedPreferenceChanged(prefs, "background_colour");
-        //get the background
-        // set the background
         super.onStart();
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
     public void onResume() {
         Log.i(LOG_TAG, "resume");
         super.onResume();
+
+        //Resume after returning from settings - check new preferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+        //preference 1: show or don't show images
+        store_showimg = sharedPreferences.getBoolean(KEY_IMG, true);
+        //Log.d("showimg resume main", Boolean.toString(store_showimg));
+        if (store_showimg) {
+            showImagesText.setVisibility(View.VISIBLE);
+        } else {
+            showImagesText.setVisibility((View.INVISIBLE));
+        }
+
+        //preference 2: change theme colour of main activity
+        store_theme = sharedPreferences.getString(KEY_THEME, "");
+
+        if (store_theme.equals("Light")){
+            Log.d("resume main bg", store_theme);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        else if (store_theme.equals("Dark")){
+            Log.d("resume main bg", store_theme);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+
+        //preference 3: change font
+        store_font = sharedPreferences.getString(KEY_FONT, "Montserrat");
+        Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.montserratmed);
+
+        if (store_font.equals("Montserrat")) {
+            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.montserratmed);
+        }
+        else if (store_font.equals("Calibri")){
+            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.calibri);
+        }
+        else if (store_font.equals("Arial")){
+            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.arial);
+        }
+        else if (store_font.equals("Helvetica")){
+            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.helvetica);
+        }
+        returnedText.setTypeface(typeface);
+
+        store_fontsize = sharedPreferences.getString(KEY_FONTSIZE, "Medium");
+        if (store_fontsize.equals("Small")){
+            returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP,25);
+        }
+        else if (store_fontsize.equals("Medium")){
+            returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP,35);
+
+        }
+        else if (store_fontsize.equals("Large")){
+            returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP,45);
+
+        }
+
+        //Resume speech recognition
         resetSpeechRecognizer();
         speech.startListening(recognizerIntent);
     }
@@ -258,7 +336,6 @@ public class MainActivity extends AppCompatActivity implements
             speech.destroy();
         }
     }
-
 
     @Override
     public void onBufferReceived(byte[] buffer) {
@@ -357,42 +434,46 @@ public class MainActivity extends AppCompatActivity implements
         speech.startListening(recognizerIntent);
     }
 
-
     public String getErrorText(int errorCode) {
+        Context context = getApplicationContext();
+        CharSequence text;
+        int duration = Toast.LENGTH_SHORT;
         String message;
         switch (errorCode) {
             case SpeechRecognizer.ERROR_AUDIO:
-                message = "Audio recording error";
+                text = "Audio recording error";
                 break;
             case SpeechRecognizer.ERROR_CLIENT:
-                message = "Client side error";
+                text = "Client side error.";
                 break;
             case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                message = "Insufficient permissions";
+                text = "Insufficient permissions";
                 break;
             case SpeechRecognizer.ERROR_NETWORK:
-                message = "Network error";
+                text = "Network error";
                 break;
             case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
-                message = "Network timeout";
+                text = "Network timeout";
                 break;
             case SpeechRecognizer.ERROR_NO_MATCH:
-                message = "No match";
+                text = "No match";
                 break;
             case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
-                message = "RecognitionService busy";
+                text = "RecognitionService busy";
                 break;
             case SpeechRecognizer.ERROR_SERVER:
-                message = "Error from server";
+                text = "Error from server";
                 break;
             case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-                message = "No speech input";
+                text = "No speech input";
                 break;
             default:
-                message = "Didn't understand, please try again.";
+                text = "Didn't understand, please try again.";
                 break;
         }
-        return message;
+
+        Toast.makeText(context, text, duration).show();
+        return (String) text;
     }
 
 

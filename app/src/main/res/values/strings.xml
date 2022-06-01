@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Wordsmith</string>
     <string name="Show_images">Show images under word suggestions</string>
-    <string name="colouropts">Colour options</string>
+    <string name="themes">Theme options</string>
     <string name="background_colour">Background colour</string>
     <string name="primary_colour">Primary text colour</string>
     <string name="highlight_colour">Highlight colour</string>
     <string name="font">Font</string>
     <string name="fontopts">Font options</string>
-    <string name="text_size">Text size</string>
+    <string name="font_size">Font size</string>
     <string name="delay">Delay before word suggestions</string>
     <string name="no_suggestions">Number of word suggestions</string>
     <string name="customise">Customise Wordsmith</string>
@@ -16,25 +16,21 @@
     <string name="go_back_to_main">go back to main</string>
     <string name="logo">logo</string>
 
-    <string-array name="pref_2">
-        <item>1</item>
-        <item>2</item>
+
+
+    <string-array name="pref_themecoloursy">
+        <item>Light</item>
+        <item>Dark</item>
     </string-array>
 
-    <string-array name="pref_3">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="pref_bgcolourstrings">
-        <item>Black</item>
-        <item>White</item>
+    <string-array name="pref_txtcolours_display">
+        <item>Grey</item>
+        <item>Dark grey</item>
     </string-array>
 
     <string-array name="pref_txtcolours">
-        <item>Grey</item>
-        <item>Dark grey</item>
+        <item>grey</item>
+        <item>dark_grey</item>
     </string-array>
 
     <string-array name="pref_hlcolours">
@@ -43,9 +39,12 @@
     </string-array>
 
     <string-array name="pref_fonts">
-        <item>Sans Serif 1</item>
-        <item>Sans Serif 2</item>
+        <item>Montserrat</item>
+        <item>Calibri</item>
+        <item>Arial</item>
+        <item>Helvetica</item>
     </string-array>
+
 
     <string-array name="pref_textsize">
         <item>Small</item>
@@ -59,8 +58,8 @@
     </string-array>
 
     <string-array name="pref_no_suggestions">
-        <item>3</item>
         <item>4</item>
+        <item>6</item>
     </string-array>
 
 </resources>

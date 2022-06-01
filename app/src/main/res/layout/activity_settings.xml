@@ -17,7 +17,7 @@
         android:layout_marginStart="22dp"
         android:layout_marginTop="101dp"
         android:layout_marginEnd="26dp"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserratmed"
         android:gravity="start"
         android:text="@string/customise"
         android:textSize="30sp" />
@@ -26,7 +26,7 @@
         our preference fragment-->
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/wordsmithLogo"
         app:srcCompat="@drawable/wordsmith_logo"
         android:layout_width="154dp"
         android:layout_height="81dp"
@@ -37,7 +37,7 @@
 
 
     <FrameLayout
-        android:id="@+id/idFrameLayout"
+        android:id="@+id/list_container"
         android:layout_width="409dp"
         android:layout_height="405dp"
         android:layout_alignParentStart="true"
