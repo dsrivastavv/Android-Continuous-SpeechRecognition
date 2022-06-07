@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String KEY_IMG = "Show images under word suggestions";
     public static final String KEY_FONT = "Font";
     public static final String KEY_FONTSIZE ="Font size";
-
+    ArrayList<PredictionModel> predictionModelArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,9 +139,19 @@ public class MainActivity extends AppCompatActivity implements
         //word grid set up
         wordGrid = findViewById(R.id.wordGrid);
 
-        GridAdapter gridAdapter = new GridAdapter(this, predictions, images);
+        String[] predictions = {
+                "Dog", "Cat", "Glass", "Sloth", "Washing", "Name", "Like", "Run", "Know"
+        };
 
-        wordGrid.setAdapter(gridAdapter);
+        predictionModelArrayList = new ArrayList<PredictionModel>();
+        predictionModelArrayList.add((new PredictionModel(predictions[0], R.drawable.wordsmith_logo)));
+        predictionModelArrayList.add((new PredictionModel(predictions[1], R.drawable.wordsmith_logo)));
+        predictionModelArrayList.add((new PredictionModel(predictions[2], R.drawable.wordsmith_logo)));
+        predictionModelArrayList.add((new PredictionModel(predictions[3], R.drawable.wordsmith_logo)));
+        predictionModelArrayList.add((new PredictionModel(predictions[4], R.drawable.wordsmith_logo)));
+        predictionModelArrayList.add((new PredictionModel(predictions[5], R.drawable.wordsmith_logo)));
+        PredictionGridAdapter adapter = new PredictionGridAdapter(this, predictionModelArrayList);
+        wordGrid.setAdapter(adapter);
 
         // initialise package that simplifies API calls
         AndroidNetworking.initialize(getApplicationContext());
@@ -390,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // call back end here to get predicted words
 //        try {
-//            run("www.google.com");
+//            run("WordSmith.urls");
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }

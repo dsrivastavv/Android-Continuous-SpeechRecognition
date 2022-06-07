@@ -30,7 +30,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="22dp"
+        android:layout_marginStart="35dp"
         android:layout_marginTop="101dp"
         android:layout_marginEnd="26dp"
         android:fontFamily="@font/montserratmed"
@@ -52,19 +52,18 @@
 
     <GridView
         android:id="@+id/wordGrid"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="362dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="54dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="117dp"
-        android:footerDividersEnabled="false"
-        android:horizontalSpacing="50dp"
         android:numColumns="3"
-        android:padding="1dp">
+        android:padding="1dp"
+        android:horizontalSpacing="10dp">
 
     </GridView>
 
