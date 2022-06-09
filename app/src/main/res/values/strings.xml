@@ -16,8 +16,6 @@
     <string name="go_back_to_main">go back to main</string>
     <string name="logo">logo</string>
 
-
-
     <string-array name="pref_themecoloursy">
         <item>Light</item>
         <item>Dark</item>

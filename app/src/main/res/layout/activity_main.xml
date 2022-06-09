@@ -7,22 +7,6 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="363dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="154dp"
-        android:layout_marginEnd="26dp"
-        android:fontFamily="@font/montserratmed"
-        android:gravity="left"
-        android:text="showing images"
-        android:textSize="30sp" />
-
-    <TextView
         android:id="@+id/textView1"
         android:layout_width="363dp"
         android:layout_height="wrap_content"
@@ -32,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="35dp"
         android:layout_marginTop="101dp"
-        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="30dp"
         android:fontFamily="@font/montserratmed"
         android:gravity="left"
         android:text="Speak to start"
@@ -49,56 +33,62 @@
         android:layout_marginStart="182dp"
         android:layout_marginTop="139dp" />
 
-
     <GridView
         android:id="@+id/wordGrid"
+        android:layout_below="@+id/textView1"
         android:layout_width="fill_parent"
         android:layout_height="362dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="6dp"
         android:layout_marginBottom="117dp"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="20dp"
         android:numColumns="3"
-        android:padding="1dp"
-        android:horizontalSpacing="10dp">
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        >
 
     </GridView>
 
-    <ImageButton
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/pauseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="134dp"
+        android:layout_marginStart="138dp"
         android:layout_marginBottom="31dp"
         android:contentDescription="Pauses listening"
-        app:srcCompat="@android:drawable/ic_media_pause" />
+        android:src="@drawable/ic_baseline_pause_24" />
 
-    <ImageButton
-        android:id="@+id/plusButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="134dp"
-        android:layout_marginBottom="31dp"
-        android:contentDescription="Opens settings page"
-        app:srcCompat="@android:drawable/ic_menu_add" />
-
-    <ImageButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/playButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="135dp"
+        android:layout_marginStart="138dp"
         android:layout_marginBottom="31dp"
         android:contentDescription="Resumes listening"
-        app:srcCompat="@android:drawable/ic_media_play" />
+        android:src="@drawable/ic_baseline_play_arrow_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/plusButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_baseline_add_24"
+        android:contentDescription="Opens settings page"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="138dp"
+        android:layout_marginBottom="31dp"
+        />
+
 
     <ImageView
         android:id="@+id/wordsmithLogo"

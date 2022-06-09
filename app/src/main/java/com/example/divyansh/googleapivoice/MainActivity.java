@@ -1,31 +1,29 @@
 package com.example.divyansh.googleapivoice;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,7 +34,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import com.androidnetworking.AndroidNetworking;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -51,25 +53,25 @@ public class MainActivity extends AppCompatActivity implements
     private Intent recognizerIntent;
     private String LOG_TAG = "VoiceRecognitionActivity";
     //UI
-    private ImageButton pauseButton;
-    private ImageButton playButton;
-    private ImageButton settingsButton;
-    private TextView showImagesText;
+    private FloatingActionButton pauseButton;
+    private FloatingActionButton playButton;
+    private FloatingActionButton settingsButton;
     //WordGrid
     private GridView wordGrid;
-    String[] predictions = {};
-    final int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
+    String[] predictions = {"Dog", "Cat", "Glass", "Sloth", "Washing", "Name", "Like", "Run", "Know"};
+    //final int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
     //Preferences
     String store_theme;
-    boolean store_showimg;
     String store_font;
     String store_fontsize;
+    int store_nosugg;
     public static final String KEY_THEME = "Theme options";
     public static final String KEY_IMG = "Show images under word suggestions";
     public static final String KEY_FONT = "Font";
     public static final String KEY_FONTSIZE ="Font size";
-    ArrayList<PredictionModel> predictionModelArrayList;
+    public static final String KEY_NOSUGG ="Number of word suggestions";
 
+    ArrayList<PredictionModel> predictionModelArrayList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +84,8 @@ public class MainActivity extends AppCompatActivity implements
         progressBar.setVisibility(View.INVISIBLE);
         pauseButton = findViewById(R.id.pauseButton);
         playButton = findViewById(R.id.playButton);
-        playButton.setVisibility(View.INVISIBLE);
+        playButton.hide();
         settingsButton = findViewById(R.id.plusButton);
-        showImagesText = findViewById(R.id.textView2);
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements
         pauseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onStop();
-                pauseButton.setVisibility(View.INVISIBLE);
-                playButton.setVisibility(View.VISIBLE);
+                pauseButton.hide();
+                playButton.show();
             }
 
         });
@@ -106,25 +107,16 @@ public class MainActivity extends AppCompatActivity implements
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onResume();
-                playButton.setVisibility(View.INVISIBLE);
-                pauseButton.setVisibility(View.VISIBLE);
+                playButton.hide();
+                pauseButton.show();
             }
         });
 
         //checking initial preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-
-        store_showimg = sharedPreferences.getBoolean(KEY_IMG, true);
-        //Log.d("showimg on start up", Boolean.toString(store_showimg));
-        if (store_showimg){
-            showImagesText.setVisibility(View.VISIBLE);
-        }
-        else{
-            showImagesText.setVisibility((View.INVISIBLE));
-        }
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         store_theme = sharedPreferences.getString(KEY_THEME, "Light");
-        Log.d("Bg start main", store_theme);
         if (store_theme.equals("Light")){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
@@ -132,26 +124,51 @@ public class MainActivity extends AppCompatActivity implements
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
 
+        //change font of speech recognition text
         store_font = sharedPreferences.getString(KEY_FONT, "Montserrat");
+        Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.montserratmed);
+
+        switch (store_font) {
+            case "Montserrat":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.montserratmed);
+                break;
+            case "Calibri":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.calibri);
+                break;
+            case "Arial":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.arial);
+                break;
+            case "Helvetica":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.helvetica);
+                break;
+        }
+        returnedText.setTypeface(typeface);
+
+        //change font size of speech recognition text and word grid
+        wordGrid = findViewById(R.id.wordGrid);
 
         store_fontsize = sharedPreferences.getString(KEY_FONTSIZE, "Medium");
 
-        //word grid set up
-        wordGrid = findViewById(R.id.wordGrid);
+        switch (store_fontsize) {
+            case "Small":
+                returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);//speech rec text
+                wordGrid.setVerticalSpacing(20);
+                break;
+            case "Medium":
+                returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
+                wordGrid.setVerticalSpacing(30);
+                break;
+            case "Large":
+                returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
+                wordGrid.setVerticalSpacing(50);
+                break;
+        }
 
-        String[] predictions = {
-                "Dog", "Cat", "Glass", "Sloth", "Washing", "Name", "Like", "Run", "Know"
-        };
+        //word grid shorten
+        //int nosugg = sharedPreferences.getInt(KEY_NOSUGG, 6);
+        // Log.d("no_sugg ", Integer.toString(nosugg));
 
-        predictionModelArrayList = new ArrayList<PredictionModel>();
-        predictionModelArrayList.add((new PredictionModel(predictions[0], R.drawable.wordsmith_logo)));
-        predictionModelArrayList.add((new PredictionModel(predictions[1], R.drawable.wordsmith_logo)));
-        predictionModelArrayList.add((new PredictionModel(predictions[2], R.drawable.wordsmith_logo)));
-        predictionModelArrayList.add((new PredictionModel(predictions[3], R.drawable.wordsmith_logo)));
-        predictionModelArrayList.add((new PredictionModel(predictions[4], R.drawable.wordsmith_logo)));
-        predictionModelArrayList.add((new PredictionModel(predictions[5], R.drawable.wordsmith_logo)));
-        PredictionGridAdapter adapter = new PredictionGridAdapter(this, predictionModelArrayList);
-        wordGrid.setAdapter(adapter);
+        makeWordGrid(predictions, 6);
 
         // initialise package that simplifies API calls
         AndroidNetworking.initialize(getApplicationContext());
@@ -169,9 +186,32 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         setRecogniserIntent();
         speech.startListening(recognizerIntent);
+    }
+
+    public void makeWordGrid(String[] predictedWords, int no_suggestions){
+        //cut down predicted words array based on the settings preference
+        for (String predictedWord : predictedWords) {
+            Log.d("pred word: ", predictedWord);
+        }
+        if (predictedWords.length>no_suggestions){
+            Log.d("pred ReducedPrediction", " got here " + no_suggestions);
+            String[] lessPredictedWords = Arrays.copyOfRange(predictedWords, 0, no_suggestions);
+            for (String lessPredictedWord : lessPredictedWords) {
+                Log.d("pred word less: ", lessPredictedWord);
+            }
+            predictedWords = lessPredictedWords;
+        }
+
+        //initialise and populate prediction array list
+        predictionModelArrayList = new ArrayList<PredictionModel>();
+        for (String predictedWord : predictedWords) {
+            predictionModelArrayList.add((new PredictionModel(predictedWord, R.drawable.wordsmith_logo)));
+        }
+        //make new adapter and apply to grid
+        PredictionGridAdapter adapter = new PredictionGridAdapter(this, predictionModelArrayList);
+        wordGrid.setAdapter(adapter);
     }
 
     public void openSettings() {
@@ -182,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBeginningOfSpeech() {
         Log.i(LOG_TAG, "onBeginningOfSpeech");
-        progressBar.setIndeterminate(false);
+        progressBar.setIndeterminate(false); //TODO: remove progress bar entirely
         progressBar.setMax(10);
     }
 
@@ -193,11 +233,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onError(int errorCode) {
-        String errorMessage = getErrorText(errorCode);
+        CharSequence errorMessage = (CharSequence) getErrorText(errorCode);
+        int duration = Toast.LENGTH_SHORT;
+        Context context = getApplicationContext();
+
         Log.i(LOG_TAG, "FAILED " + errorMessage);
-//        if (!errorMessage.equals("No match")) {
-//            returnedText.setText(errorMessage);
-//        }
+        if (!errorMessage.equals("No match")) {
+            Toast toast = Toast.makeText(context, errorMessage, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
 
         // rest voice recogniser
         resetSpeechRecognizer();
@@ -270,60 +315,61 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(LOG_TAG, "resume");
         super.onResume();
 
-        //Resume after returning from settings - check new preferences
+        //Resume after returning from settings - this checks new preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-
-        //preference 1: show or don't show images
-        store_showimg = sharedPreferences.getBoolean(KEY_IMG, true);
-        //Log.d("showimg resume main", Boolean.toString(store_showimg));
-        if (store_showimg) {
-            showImagesText.setVisibility(View.VISIBLE);
-        } else {
-            showImagesText.setVisibility((View.INVISIBLE));
-        }
-
-        //preference 2: change theme colour of main activity
+        //change theme colour of main activity
         store_theme = sharedPreferences.getString(KEY_THEME, "");
 
         if (store_theme.equals("Light")){
-            Log.d("resume main bg", store_theme);
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         else if (store_theme.equals("Dark")){
-            Log.d("resume main bg", store_theme);
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
 
-        //preference 3: change font
+        //change font of speech recognition text
         store_font = sharedPreferences.getString(KEY_FONT, "Montserrat");
         Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.montserratmed);
 
-        if (store_font.equals("Montserrat")) {
-            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.montserratmed);
-        }
-        else if (store_font.equals("Calibri")){
-            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.calibri);
-        }
-        else if (store_font.equals("Arial")){
-            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.arial);
-        }
-        else if (store_font.equals("Helvetica")){
-            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.helvetica);
+        switch (store_font) {
+            case "Montserrat":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.montserratmed);
+                break;
+            case "Calibri":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.calibri);
+                break;
+            case "Arial":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.arial);
+                break;
+            case "Helvetica":
+                typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.helvetica);
+                break;
         }
         returnedText.setTypeface(typeface);
 
+        //change font size of speech recognition text
         store_fontsize = sharedPreferences.getString(KEY_FONTSIZE, "Medium");
-        if (store_fontsize.equals("Small")){
-            returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP,25);
-        }
-        else if (store_fontsize.equals("Medium")){
-            returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP,35);
 
+        switch (store_fontsize) {
+            case "Small":
+                returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);//speech rec text
+                wordGrid.setVerticalSpacing(20);
+                break;
+            case "Medium":
+                returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
+                wordGrid.setVerticalSpacing(30);
+                break;
+            case "Large":
+                returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
+                wordGrid.setVerticalSpacing(50);
+                break;
         }
-        else if (store_fontsize.equals("Large")){
-            returnedText.setTextSize(TypedValue.COMPLEX_UNIT_SP,45);
 
-        }
+        //int nosugg = sharedPreferences.getInt(KEY_NOSUGG, 6);
+        //Log.d("no_sugg ", Integer.toString(nosugg));
+
+        //reset Predicted word grid (update font, fontsize and showing images)
+        makeWordGrid(predictions, 6);
 
         //Resume speech recognition
         resetSpeechRecognizer();
@@ -387,16 +433,26 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public static String last10Words(String input) {
+        String[] words = input.split("\\s+");
+        if (words.length>10){
+            String output = "";
+            for(int i = words.length-1; i>words.length-11;i--){
+                output += words[i];
+            }
+            return output.toString();
+        }
+        else{
+            return input;
+        }
+    }
+
     @Override
     public void onResults(Bundle results) {
         Log.i(LOG_TAG, "onResults");
         ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        String text = "";
-        for (String result : matches) {
-            text += result + "\n";
-        }
-
-        returnedText.setText(matches.get(0));
+        String bestMatch = matches.get(0);
+        returnedText.setText(last10Words(bestMatch));
 
         // call back end here to get predicted words
 //        try {
@@ -447,8 +503,7 @@ public class MainActivity extends AppCompatActivity implements
     public String getErrorText(int errorCode) {
         Context context = getApplicationContext();
         CharSequence text;
-        int duration = Toast.LENGTH_SHORT;
-        String message;
+
         switch (errorCode) {
             case SpeechRecognizer.ERROR_AUDIO:
                 text = "Audio recording error";
@@ -482,7 +537,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
 
-        Toast.makeText(context, text, duration).show();
         return (String) text;
     }
 

@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--no categories-->
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="500dp" android:layout_width="400dp">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="500dp"
+    android:layout_width="400dp">
    <PreferenceCategory android:title="Preferences">
     <SwitchPreference
         android:defaultValue="true"
         android:key="@string/Show_images"
         android:title="@string/Show_images" />
+
+   <SeekBarPreference
+       android:progress="6"
+       android:defaultValue="6"
+       android:key="no_suggestions"
+       android:title="@string/no_suggestions"
+       android:max="10"
+       />
+
    </PreferenceCategory>
 
     <PreferenceCategory android:title="Appearance">
