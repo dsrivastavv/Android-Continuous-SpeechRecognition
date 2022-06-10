@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="2000dp" android:layout_width="900dp">
+
+    <item
+        android:layout_height="2000dp"
+        android:layout_width="100dp"
+        android:drawable="@color/white" />
+<!--    <item android:drawable="@drawable/wordsmith_logo"/>-->
+    <item>
+        <bitmap
+            android:src="@drawable/wordsmith_logo_xml"
+            android:gravity="center"
+            />
+    </item>
+</layer-list>

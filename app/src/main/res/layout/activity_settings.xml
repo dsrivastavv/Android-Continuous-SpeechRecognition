@@ -27,7 +27,7 @@
 
     <ImageView
         android:id="@+id/wordsmithLogo"
-        app:srcCompat="@drawable/wordsmith_logo"
+        app:srcCompat="@drawable/wordsmith_logo_xml"
         android:layout_width="154dp"
         android:layout_height="81dp"
         android:layout_marginStart="257dp"

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--no categories-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="500dp"
+    android:layout_width="400dp">
+   <PreferenceCategory android:title="Preferences">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/Show_images"
+        android:title="@string/Show_images" />
+
+   <SeekBarPreference
+       android:progress="6"
+       android:defaultValue="6"
+       android:key="no_suggestions"
+       android:title="@string/no_suggestions"
+       android:min="1"
+       android:max="10"
+       />
+   </PreferenceCategory>
+
+    <PreferenceCategory android:title="Appearance">
+    <ListPreference
+        android:defaultValue="Light"
+        android:dialogTitle="@string/themes"
+        android:entries="@array/pref_themecoloursy"
+        android:entryValues="@array/pref_themecoloursy"
+        android:key="@string/themes"
+        android:title="@string/themes"/>
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dialogTitle="@string/fontopts"
+        android:entries="@array/pref_fonts"
+        android:entryValues="@array/pref_fonts"
+        android:key="@string/font"
+        android:title="@string/font"/>
+
+        <ListPreference
+            android:defaultValue="0"
+            android:dialogTitle="@string/font_size"
+            android:entries="@array/pref_textsize"
+            android:entryValues="@array/pref_textsize"
+            android:key="@string/font_size"
+            android:title="@string/font_size"
+            />
+
+    </PreferenceCategory>
+
+<!--    <ListPreference-->
+<!--        android:defaultValue="1"-->
+<!--        android:dialogTitle="@string/colouropts"-->
+<!--        android:entries="@array/pref_txtcolours_display"-->
+<!--        android:entryValues="@array/pref_txtcolours"-->
+<!--        android:key="@string/primary_colour"-->
+<!--        android:title="@string/primary_colour"/>-->
+
+<!--    <ListPreference-->
+<!--        android:defaultValue="1"-->
+<!--        android:dialogTitle="@string/colouropts"-->
+<!--        android:entries="@array/pref_hlcolours"-->
+<!--        android:entryValues="@array/pref_hlcolours"-->
+<!--        android:key="@string/highlight_colour"-->
+<!--        android:title="@string/highlight_colour"/>-->
+
+<!--    <ListPreference-->
+<!--        android:defaultValue="1"-->
+<!--        android:dialogTitle="@string/text_size"-->
+<!--        android:entries="@array/pref_textsize"-->
+<!--        android:entryValues="@array/pref_textsize"-->
+<!--        android:key="@string/text_size"-->
+<!--        android:title="@string/text_size"/>-->
+
+<!--    <ListPreference-->
+<!--        android:defaultValue="1"-->
+<!--        android:dialogTitle="@string/delay"-->
+<!--        android:entries="@array/pref_delay"-->
+<!--        android:entryValues="@array/pref_delay"-->
+<!--        android:key="@string/delay"-->
+<!--        android:title="@string/delay"/>-->
+
+<!--    <ListPreference-->
+<!--        android:defaultValue="1"-->
+<!--        android:dialogTitle="@string/no_suggestions"-->
+<!--        android:entries="@array/pref_no_suggestions"-->
+<!--        android:entryValues="@array/pref_no_suggestions"-->
+<!--        android:key="@string/no_suggestions"-->
+<!--        android:title="@string/no_suggestions"/>-->
+    
+</PreferenceScreen>
+

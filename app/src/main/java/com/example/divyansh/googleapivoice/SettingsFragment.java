@@ -59,12 +59,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             case KEY_IMG:
                 //preference 1: Show images or not
                 boolean changedimg = sharedPreferences.getBoolean(key, true);
-//                Log.d("Change IMG SharedPref", key + " = " + Boolean.toString(changedimg));
+                Log.d("Change IMG SharedPref", key + " = " + Boolean.toString(changedimg));
                 break;
             case KEY_THEME:
                 //preference 2: Theme: Dark or light
                 String changedtheme = sharedPreferences.getString(key, "Light");
-//                Log.d("Change THEME SharedPref", key + " = " + changedtheme);
+                Log.d("Change THEME SharedPref", key + " = " + changedtheme);
                 //change theme colour of settings
                 if (changedtheme.equals("Light")) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -91,18 +91,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 //                typeface = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.helvetica);
 //            }
 //            heading.setTypeface(typeface);
-//                Log.d("Change FONT SharedPref", key + " = " + changedfont);
+                Log.d("Change FONT SharedPref", key + " = " + changedfont);
                 break;
             case KEY_FONTSIZE:
                 String changedsize = sharedPreferences.getString(key, "Medium");
-//                Log.d("Change FONT SharedPref", key + " = " + changedsize);
+                Log.d("Change FONT SharedPref", key + " = " + changedsize);
                 break;
-//            case KEY_NOSUGG:
-//                int new_nosugg = sharedPreferences.getInt(key, 6);
-////                Log.d("Change nosug SharedPref", key + " = " + Integer.toString(new_nosugg));
+            case "Number of word suggestions":
+                int new_nosugg = sharedPreferences.getInt(key, 6);
+                Log.d("Change nosug SharedPref", key + " = " + new_nosugg);
         }
     }
-
 
     @Override
     public void onPause() {

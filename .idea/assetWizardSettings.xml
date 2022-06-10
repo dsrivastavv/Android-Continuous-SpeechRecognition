@@ -33,7 +33,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_baseline_home_24" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="wordsmith_logo" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/Screenshot_2021-09-01_at_13.40.00.svg" />
                           </map>
                         </option>
                       </PersistentState>

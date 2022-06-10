@@ -13,11 +13,11 @@
    <SeekBarPreference
        android:progress="6"
        android:defaultValue="6"
-       android:key="no_suggestions"
+       android:key="@string/no_suggestions"
        android:title="@string/no_suggestions"
+       android:min="1"
        android:max="10"
        />
-
    </PreferenceCategory>
 
     <PreferenceCategory android:title="Appearance">

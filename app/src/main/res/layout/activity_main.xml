@@ -14,28 +14,28 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="101dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="87dp"
+        android:layout_marginEnd="20dp"
         android:fontFamily="@font/montserratmed"
         android:gravity="left"
         android:text="Speak to start"
         android:textSize="30sp" />
 
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="182dp"
-        android:layout_marginTop="139dp" />
+    <ImageButton
+        android:id="@+id/indicator_pause"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@id/textView1"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-10dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/big_pause_shape"
+        app:srcCompat="@drawable/ic_baseline_play_arrow_24" />
 
     <GridView
         android:id="@+id/wordGrid"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/indicator_pause"
         android:layout_width="fill_parent"
         android:layout_height="362dp"
         android:layout_alignParentStart="true"
@@ -43,7 +43,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="6dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="117dp"
         android:horizontalSpacing="10dp"
         android:verticalSpacing="20dp"
@@ -101,6 +101,6 @@
         android:layout_marginStart="257dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="0dp"
-        app:srcCompat="@drawable/wordsmith_logo" />
+        app:srcCompat="@drawable/wordsmith_logo_xml" />
 
 </RelativeLayout>

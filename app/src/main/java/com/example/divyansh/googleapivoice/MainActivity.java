@@ -13,7 +13,6 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -22,9 +21,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.GridView;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +38,12 @@ import java.util.Arrays;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+
+//import com.theokanning.openai.OpenAiService;
+//import com.theokanning.openai.completion.CompletionRequest;
+//import com.theokanning.openai.engine.Engine;
+//import com.theokanning.openai.search.SearchRequest;
+
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
     //Speech recognition
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private TextView returnedText;
-    private ProgressBar progressBar;
+    private ImageView bigPause;
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
     private String LOG_TAG = "VoiceRecognitionActivity";
@@ -80,11 +83,11 @@ public class MainActivity extends AppCompatActivity implements
 
         // UI initialisation
         returnedText = findViewById(R.id.textView1);
-        progressBar = findViewById(R.id.progressBar1);
-        progressBar.setVisibility(View.INVISIBLE);
+        bigPause = findViewById(R.id.indicator_pause);
         pauseButton = findViewById(R.id.pauseButton);
         playButton = findViewById(R.id.playButton);
         playButton.hide();
+        bigPause.setVisibility(View.INVISIBLE);
         settingsButton = findViewById(R.id.plusButton);
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements
                 onStop();
                 pauseButton.hide();
                 playButton.show();
+                bigPause.setVisibility(View.VISIBLE);
             }
 
         });
@@ -108,9 +112,20 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 onResume();
                 playButton.hide();
+                bigPause.setVisibility(View.INVISIBLE);
                 pauseButton.show();
             }
         });
+
+        bigPause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onResume();
+                playButton.hide();
+                bigPause.setVisibility(View.INVISIBLE);
+                pauseButton.show();
+            }
+        });
+
 
         //checking initial preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -176,8 +191,6 @@ public class MainActivity extends AppCompatActivity implements
         // start speech recogniser
         resetSpeechRecognizer();
 
-        // start progress bar
-        progressBar.setIndeterminate(true);
 
         // check for permission
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -192,22 +205,15 @@ public class MainActivity extends AppCompatActivity implements
 
     public void makeWordGrid(String[] predictedWords, int no_suggestions){
         //cut down predicted words array based on the settings preference
-        for (String predictedWord : predictedWords) {
-            Log.d("pred word: ", predictedWord);
-        }
         if (predictedWords.length>no_suggestions){
-            Log.d("pred ReducedPrediction", " got here " + no_suggestions);
             String[] lessPredictedWords = Arrays.copyOfRange(predictedWords, 0, no_suggestions);
-            for (String lessPredictedWord : lessPredictedWords) {
-                Log.d("pred word less: ", lessPredictedWord);
-            }
             predictedWords = lessPredictedWords;
         }
 
         //initialise and populate prediction array list
         predictionModelArrayList = new ArrayList<PredictionModel>();
         for (String predictedWord : predictedWords) {
-            predictionModelArrayList.add((new PredictionModel(predictedWord, R.drawable.wordsmith_logo)));
+            predictionModelArrayList.add((new PredictionModel(predictedWord, R.drawable.wordsmith_logo_xml)));
         }
         //make new adapter and apply to grid
         PredictionGridAdapter adapter = new PredictionGridAdapter(this, predictionModelArrayList);
@@ -222,13 +228,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBeginningOfSpeech() {
         Log.i(LOG_TAG, "onBeginningOfSpeech");
-        progressBar.setIndeterminate(false); //TODO: remove progress bar entirely
-        progressBar.setMax(10);
+
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
-        progressBar.setProgress((int) rmsdB);
     }
 
     @Override
@@ -365,8 +369,8 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
 
-        //int nosugg = sharedPreferences.getInt(KEY_NOSUGG, 6);
-        //Log.d("no_sugg ", Integer.toString(nosugg));
+//        int nosugg = sharedPreferences.getInt(KEY_NOSUGG, 6);
+//        Log.d("no_sugg ", Integer.toString(nosugg));
 
         //reset Predicted word grid (update font, fontsize and showing images)
         makeWordGrid(predictions, 6);
@@ -401,7 +405,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onEndOfSpeech() {
         Log.i(LOG_TAG, "onEndOfSpeech");
-        progressBar.setIndeterminate(true);
         speech.stopListening();
     }
 
@@ -433,12 +436,21 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+//    public static void getPredictions(Context context) {
+//        OpenAiService service = new OpenAiService(your_token)
+//        CompletionRequest completionRequest = CompletionRequest.builder()
+//                .prompt("Somebody once told me the world is gonna roll me")
+//                .echo(true)
+//                .build();
+//        service.createCompletion("ada", completionRequest).getChoices().forEach(System.out::println);
+//    }
+
     public static String last10Words(String input) {
         String[] words = input.split("\\s+");
         if (words.length>10){
             String output = "";
             for(int i = words.length-1; i>words.length-11;i--){
-                output += words[i];
+                output += words[i] + " ";
             }
             return output.toString();
         }
@@ -454,12 +466,7 @@ public class MainActivity extends AppCompatActivity implements
         String bestMatch = matches.get(0);
         returnedText.setText(last10Words(bestMatch));
 
-        // call back end here to get predicted words
-//        try {
-//            run("WordSmith.urls");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
 
         String[] predictions = {
                 "Dog", "Cat", "Glass", "Sloth", "Washing", "Name", "Like", "Run", "Know"
