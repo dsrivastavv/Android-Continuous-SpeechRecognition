@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(LOG_TAG, "FAILED " + errorMessage);
         if (!errorMessage.equals("No match")) {
             Toast toast = Toast.makeText(context, errorMessage, duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.setGravity(Gravity.CENTER, 0, 500);
             toast.show();
         }
 
