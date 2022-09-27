@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "cordova-plugin-androidx-adapter": "^1.1.3"
+  }
+}

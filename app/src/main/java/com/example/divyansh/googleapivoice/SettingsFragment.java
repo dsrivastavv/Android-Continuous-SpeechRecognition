@@ -22,34 +22,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public static final String KEY_NOSUGG ="Number of word suggestions";
 
     private TextView heading;
-    //private TextView heading = (TextView) getView().findViewById(R.id.settingshead);
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        //set theme - comments change font of breadcrumb but not the rest of the pop up :(
-//        SharedPreferences sharedprefs = getPreferenceScreen().getSharedPreferences();
-//        String store_font = sharedprefs.getString(KEY_FONT, "Montserrat");
         int theme = R.style.PreferenceBoxThemeMont;
-//        if (store_font.equals("Calibri")){
-//            theme = R.style.PreferenceBoxThemeCali;
-//        }
-//        else if (store_font.equals("Arial")){
-//            theme = theme = R.style.PreferenceBoxThemeArial;
-//        }
-//        else if (store_font.equals("Helvetica")){
-//            theme = R.style.PreferenceBoxThemeHelv;
-//        }
         container.getContext().setTheme(theme);
         return view;
     }
 
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
         addPreferencesFromResource(R.xml.preferences);
-        getPreferenceScreen().getSharedPreferences()
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences
                 .registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -74,32 +60,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 break;
             case KEY_FONT:
                 String changedfont = sharedPreferences.getString(key, "Montserrat");
-                //Changing font for heading of settings page
-//            heading = getActivity().findViewById(R.id.settingshead);
-//            Typeface typeface = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.montserratmed);
-//
-//            if (changedfont.equals("Montserrat")) {
-//                typeface = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.montserratmed);
-//            }
-//            else if (changedfont.equals("Calibri")){
-//                typeface = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.calibri);
-//            }
-//            else if (changedfont.equals("Arial")){
-//                typeface = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.arial);
-//            }
-//            else if (changedfont.equals("Helvetica")){
-//                typeface = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.helvetica);
-//            }
-//            heading.setTypeface(typeface);
                 Log.d("Change FONT SharedPref", key + " = " + changedfont);
                 break;
             case KEY_FONTSIZE:
                 String changedsize = sharedPreferences.getString(key, "Medium");
                 Log.d("Change FONT SharedPref", key + " = " + changedsize);
                 break;
-            case "Number of word suggestions":
-                int new_nosugg = sharedPreferences.getInt(key, 6);
-                Log.d("Change nosug SharedPref", key + " = " + new_nosugg);
+//            case KEY_NOSUGG:
+//                int new_nosugg = sharedPreferences.getInt(key, 6);
+//                Log.d("Change nosug SharedPref", key + " = " + new_nosugg);
         }
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognitionListener;
@@ -32,17 +33,30 @@ import java.io.OutputStream;
 import java.net.URL;
 import com.androidnetworking.AndroidNetworking;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.body.MultipartBody;
+import com.mashape.unirest.request.body.RequestBodyEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
-//import com.theokanning.openai.OpenAiService;
-//import com.theokanning.openai.completion.CompletionRequest;
-//import com.theokanning.openai.engine.Engine;
-//import com.theokanning.openai.search.SearchRequest;
+import android.os.AsyncTask;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import okhttp3.Response;
 
@@ -61,18 +75,18 @@ public class MainActivity extends AppCompatActivity implements
     private FloatingActionButton settingsButton;
     //WordGrid
     private GridView wordGrid;
-    String[] predictions = {"Dog", "Cat", "Glass", "Sloth", "Washing", "Name", "Like", "Run", "Know"};
+    ArrayList<String> predictions = new ArrayList<>();
     //final int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
     //Preferences
     String store_theme;
     String store_font;
     String store_fontsize;
-    int store_nosugg;
+    int store_nosugg = 3;
     public static final String KEY_THEME = "Theme options";
     public static final String KEY_IMG = "Show images under word suggestions";
     public static final String KEY_FONT = "Font";
-    public static final String KEY_FONTSIZE ="Font size";
-    public static final String KEY_NOSUGG ="Number of word suggestions";
+    public static final String KEY_FONTSIZE = "Font size";
+    public static final String KEY_NOSUGG = "Number of word suggestions";
 
     ArrayList<PredictionModel> predictionModelArrayList;
     @Override
@@ -179,18 +193,16 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
 
-        //word grid shorten
-        //int nosugg = sharedPreferences.getInt(KEY_NOSUGG, 6);
-        // Log.d("no_sugg ", Integer.toString(nosugg));
-
-        makeWordGrid(predictions, 6);
+        //initial word grid set up (not sure if i should leave it empty)
+//        int nosugg = sharedPreferences.getInt("no_sugg_key", 6);
+//        Log.d("no_sugg ", Integer.toString(nosugg));
+//        makeWordGrid(predictions, nosugg);
 
         // initialise package that simplifies API calls
         AndroidNetworking.initialize(getApplicationContext());
 
         // start speech recogniser
         resetSpeechRecognizer();
-
 
         // check for permission
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -203,11 +215,96 @@ public class MainActivity extends AppCompatActivity implements
         speech.startListening(recognizerIntent);
     }
 
-    public void makeWordGrid(String[] predictedWords, int no_suggestions){
+    private class AsyncTaskRunner extends AsyncTask<String, String, ArrayList<String>> {
+        private ArrayList<String> asyncPredictions = new ArrayList<>();
+        private Integer no_sugg;
+        @Override
+        protected ArrayList<String> doInBackground(String[] params) {
+            no_sugg = Integer.parseInt(params[1]);
+            HttpResponse<JsonNode> httpResponse = null;
+            try {
+                httpResponse = Unirest.post("https://api.openai.com/v1/completions")
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer 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")
+//                        .field("model", "text-davinci-002")
+//                        .field("prompt", params[0])
+//                        .field("temperature", 0.29)
+//                        .field("top_p", 1)
+//                        .field("frequency_penalty", 0)
+//                        .field("presence_penalty", 0)
+//                        .field("max_tokens", 5)
+//                        .field("logprobs", 10)
+                    .body("{\"model\":\"text-davinci-002\",\"prompt\":\""+params[0]+"\",\"temperature\":0.29,\"top_p\":1,\"frequency_penalty\":0,\"presence_penalty\":0," +
+                            "\"max_tokens\":5, \"logprobs\":10}")
+                        .asJson();
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+            Log.d("httpResponse", String.valueOf(httpResponse));
+            assert httpResponse != null;
+
+            //extract JSONArray called "top_logprobs" containing the top predicted words
+            JSONObject responseObject = httpResponse.getBody().getObject();
+            JSONArray choices = new JSONArray();
+            try {
+                choices = responseObject.getJSONArray("choices");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JSONObject choicesObj = new JSONObject();
+            try {
+                 choicesObj = choices.getJSONObject(0);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JSONObject logprobs = new JSONObject();
+            try {
+                logprobs = choicesObj.getJSONObject("logprobs");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JSONArray top_logprobs = new JSONArray();
+            try {
+                top_logprobs = logprobs.getJSONArray("top_logprobs");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JSONObject top_predictions = new JSONObject();
+            try {
+                top_predictions = top_logprobs.getJSONObject(0);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //convert JSONArray to ArrayList<String>
+            assert (top_predictions != null);
+
+            Iterator<String> keys = top_predictions.keys();
+
+            while(keys.hasNext()) {
+                String key = keys.next();
+                if (!Pattern.matches("\\p{Punct}", key)) {
+                    asyncPredictions.add(key);
+                }
+            }
+
+            return asyncPredictions;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> asyncPredictions) {
+            super.onPostExecute(asyncPredictions);
+            makeWordGrid(asyncPredictions, no_sugg);
+            predictions = asyncPredictions;
+        }
+    }
+
+    public void makeWordGrid(ArrayList<String> predictedWords, int no_suggestions){
         //cut down predicted words array based on the settings preference
-        if (predictedWords.length>no_suggestions){
-            String[] lessPredictedWords = Arrays.copyOfRange(predictedWords, 0, no_suggestions);
-            predictedWords = lessPredictedWords;
+        if (predictedWords.size()>no_suggestions){
+            predictedWords.subList(0, no_suggestions);
         }
 
         //initialise and populate prediction array list
@@ -228,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBeginningOfSpeech() {
         Log.i(LOG_TAG, "onBeginningOfSpeech");
-
     }
 
     @Override
@@ -369,11 +465,11 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
 
-//        int nosugg = sharedPreferences.getInt(KEY_NOSUGG, 6);
-//        Log.d("no_sugg ", Integer.toString(nosugg));
+        store_nosugg = sharedPreferences.getInt("no_sugg", 6);
+//        Log.d("no_sugg ", String.valueOf(store_nosugg));
 
-        //reset Predicted word grid (update font, fontsize and showing images)
-        makeWordGrid(predictions, 6);
+        //reset Predicted word grid (update font, fontsize, showing images, and number of sugg)
+        makeWordGrid(predictions, store_nosugg);
 
         //Resume speech recognition
         resetSpeechRecognizer();
@@ -436,15 +532,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-//    public static void getPredictions(Context context) {
-//        OpenAiService service = new OpenAiService(your_token)
-//        CompletionRequest completionRequest = CompletionRequest.builder()
-//                .prompt("Somebody once told me the world is gonna roll me")
-//                .echo(true)
-//                .build();
-//        service.createCompletion("ada", completionRequest).getChoices().forEach(System.out::println);
-//    }
-
     public static String last10Words(String input) {
         String[] words = input.split("\\s+");
         if (words.length>10){
@@ -466,11 +553,13 @@ public class MainActivity extends AppCompatActivity implements
         String bestMatch = matches.get(0);
         returnedText.setText(last10Words(bestMatch));
 
+//        Getting predicted words
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        Integer nosugg = sharedPreferences.getInt("no_sugg", 6);
+        Log.d("no_sugg ", Integer.toString(nosugg));
 
-
-        String[] predictions = {
-                "Dog", "Cat", "Glass", "Sloth", "Washing", "Name", "Like", "Run", "Know"
-        };
+        AsyncTaskRunner runner = new AsyncTaskRunner();
+        runner.execute(bestMatch, String.valueOf(2));
 
         // API calls to get an image for each word
 //        final String[] image_files = {"image1.xml", "image2.xml", "image3.xml", "image4.xml", "image5.xml", "image6.xml", "image7.xml", "image8.xml", "image9.xml"};
@@ -547,6 +636,8 @@ public class MainActivity extends AppCompatActivity implements
         return (String) text;
     }
 
-
-
 }
+
+
+
+

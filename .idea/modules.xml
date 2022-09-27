@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Android-Continuous-SpeechRecognition.iml" filepath="$PROJECT_DIR$/.idea/modules/Android-Continuous-SpeechRecognition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/Android-Continuous-SpeechRecognition.api.iml" filepath="$PROJECT_DIR$/.idea/modules/api/Android-Continuous-SpeechRecognition.api.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Android-Continuous-SpeechRecognition.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Android-Continuous-SpeechRecognition.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/Android-Continuous-SpeechRecognition.client.iml" filepath="$PROJECT_DIR$/.idea/modules/client/Android-Continuous-SpeechRecognition.client.iml" />
     </modules>
   </component>
 </project>

@@ -2,6 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.divyansh.googleapivoice"
@@ -18,7 +23,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions
+        {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -33,10 +45,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.material:material:1.0.0'
-//    implementation 'com.theokanning.openai-gpt3-java:api:1.0.0'
-//    implementation 'com.theokanning.openai-gpt3-java:client:1.0.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+    implementation 'com.mashape.unirest:unirest-java:1.3.27'
 
 }
+
 repositories {
     google()
     mavenCentral()
