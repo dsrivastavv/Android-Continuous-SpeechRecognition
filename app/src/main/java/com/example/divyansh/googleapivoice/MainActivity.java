@@ -222,10 +222,13 @@ public class MainActivity extends AppCompatActivity implements
         protected ArrayList<String> doInBackground(String[] params) {
             no_sugg = Integer.parseInt(params[1]);
             HttpResponse<JsonNode> httpResponse = null;
+//           String secret_key = getApplicationContext().getString(R.api_key.PREDICTIONS_API_TOKEN);
+            String secret_key = getResources().getString(R.string.PREDICTIONS_API_TOKEN);
+            Log.i("secret key", secret_key);
             try {
                 httpResponse = Unirest.post("https://api.openai.com/v1/completions")
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer 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")
+                        .header("Authorization", secret_key)
 //                        .field("model", "text-davinci-002")
 //                        .field("prompt", params[0])
 //                        .field("temperature", 0.29)
@@ -294,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements
                 if (!Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]|\n+", key)  && !key.equals("<|endoftext|>") && !key.equals("\")")) {
                     asyncPredictions.add(key);
                     }
-
             }
 
             while(keys_second.hasNext()) {

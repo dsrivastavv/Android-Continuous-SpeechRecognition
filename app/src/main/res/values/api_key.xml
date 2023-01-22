@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="PREDICTIONS_API_TOKEN">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</string>
+    <string name="PREDICTIONS_API_TOKEN">Bearer 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</string>
 </resources>
