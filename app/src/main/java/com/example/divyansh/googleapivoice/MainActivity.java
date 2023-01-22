@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 httpResponse = Unirest.post("https://api.openai.com/v1/completions")
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer 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")
+                        .header("Authorization", "Bearer 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")
 //                        .field("model", "text-davinci-002")
 //                        .field("prompt", params[0])
 //                        .field("temperature", 0.29)
