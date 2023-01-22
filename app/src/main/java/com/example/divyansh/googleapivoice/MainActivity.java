@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 httpResponse = Unirest.post("https://api.openai.com/v1/completions")
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer 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")
+                        .header("Authorization", "Bearer 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")
 //                        .field("model", "text-davinci-002")
 //                        .field("prompt", params[0])
 //                        .field("temperature", 0.29)
@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements
 
             //extract JSONArray called "top_logprobs" containing the top predicted words
             JSONObject responseObject = httpResponse.getBody().getObject();
+            Log.i("response", String.valueOf(responseObject));
             JSONArray choices = new JSONArray();
             try {
                 choices = responseObject.getJSONArray("choices");
@@ -273,23 +274,37 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             JSONObject top_predictions = new JSONObject();
+            JSONObject top_predictions_secondword = new JSONObject();
+
             try {
                 top_predictions = top_logprobs.getJSONObject(0);
+                top_predictions_secondword = top_logprobs.getJSONObject(1);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             //convert JSONArray to ArrayList<String>
             assert (top_predictions != null);
+            assert (top_predictions_secondword != null);
 
             Iterator<String> keys = top_predictions.keys();
+            Iterator<String> keys_second = top_predictions_secondword.keys();
 
             while(keys.hasNext()) {
                 String key = keys.next();
-                if (!Pattern.matches("\\p{Punct}", key)) {
+                if (!Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]|\n+", key)  && !key.equals("<|endoftext|>") && !key.equals("\")")) {
                     asyncPredictions.add(key);
+                    }
+
+            }
+
+            while(keys_second.hasNext()) {
+                String key = keys_second.next();
+                if (!Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]|\n+", key)  && !key.equals("<|endoftext|>") && !key.equals("\")")) {
+                        asyncPredictions.add(key);
                 }
             }
 
+            Log.i("predictions", String.valueOf(asyncPredictions));
             return asyncPredictions;
         }
 
@@ -553,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements
         String bestMatch = matches.get(0);
         returnedText.setText(last10Words(bestMatch));
 
-//        Getting predicted words
+//      Getting predicted words
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         Integer nosugg = sharedPreferences.getInt("no_sugg", 6);
         Log.d("no_sugg ", Integer.toString(nosugg));
